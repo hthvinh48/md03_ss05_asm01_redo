@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -24,4 +26,11 @@ public class StudentEnrollment {
     @JoinColumn(name = "course_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
+
+    private LocalDateTime enrolledAt;
+
+    @PrePersist
+    void onCreate() {
+        enrolledAt = LocalDateTime.now();
+    }
 }

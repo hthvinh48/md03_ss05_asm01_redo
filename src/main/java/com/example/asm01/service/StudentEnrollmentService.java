@@ -1,6 +1,7 @@
 package com.example.asm01.service;
 
 import com.example.asm01.dto.EnrollmentDetail;
+import com.example.asm01.dto.response.CourseEnrollmentResponse;
 import com.example.asm01.dto.response.StudentEnrollmentResponse;
 import com.example.asm01.model.Course;
 import com.example.asm01.model.Student;
@@ -56,7 +57,7 @@ public class StudentEnrollmentService {
         return enrollmentDetails;
     }
 
-    public void createStudentEnrolment(Long courseId, Long studentId) {
+    public CourseEnrollmentResponse createStudentEnrolment(Long courseId, Long studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(
                 () -> new RuntimeException("Student with id: " + studentId + " not found")
         );
@@ -69,6 +70,12 @@ public class StudentEnrollmentService {
         studentEnrollment.setStudent(student);
         studentEnrollment.setCourse(course);
         studentEnrollmentRepository.save(studentEnrollment);
+
+        return new CourseEnrollmentResponse(
+                courseId,
+                studentId,
+                studentEnrollment.getEnrolledAt()
+        );
     }
 
     public void updateStudentEnrolment(Long studentId, Long courseId, Long enrollmentId) {

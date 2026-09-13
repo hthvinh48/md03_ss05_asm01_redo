@@ -1,10 +1,13 @@
 package com.example.asm01.controller;
 
 import com.example.asm01.dto.request.CourseCreateRequest;
+import com.example.asm01.dto.request.CourseDropoutRequest;
+import com.example.asm01.dto.request.CourseEnrollmentRequest;
 import com.example.asm01.dto.request.CourseUpdateRequest;
+import com.example.asm01.dto.response.CourseEnrollmentResponse;
 import com.example.asm01.dto.response.CourseResponse;
-import com.example.asm01.model.Course;
 import com.example.asm01.dto.response.ApiResponse;
+import com.example.asm01.dto.response.StudentResponse;
 import com.example.asm01.service.CourseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -117,5 +120,68 @@ public class CourseController {
                     )
             );
         }
+    }
+
+    @PostMapping("/{id}/enrollments")
+    public ResponseEntity<ApiResponse<CourseEnrollmentResponse>> enrollCourse(
+            @PathVariable Long id,
+            @RequestBody CourseEnrollmentRequest req
+    ) {
+        try {
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            true,
+                            "enrolled course successfully",
+                            courseService.enrollCourse(id, req)
+                    )
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    new ApiResponse<>(
+                            false,
+                            e.getMessage(),
+                            null
+                    )
+            );
+        }
+    }
+
+    @DeleteMapping("/{courseId}/students")
+    public ResponseEntity<ApiResponse<Void>> deleteEnrollment(
+            @PathVariable Long courseId,
+            @RequestBody CourseDropoutRequest request
+    ) {
+        try {
+            courseService.deleteStudentEnrollment(courseId, request);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
+                    new ApiResponse<>(
+                            true,
+                            "deleted course successfully",
+                            null
+                    )
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ApiResponse<>(
+                            false,
+                            e.getMessage(),
+                            null
+                    )
+            );
+        }
+    }
+
+    @GetMapping("/{courseId}/enrollments/students")
+    public ResponseEntity<ApiResponse<List<StudentResponse>>> findStudentInCourse(
+            @PathVariable Long courseId,
+            @RequestParam(required = false) String search
+    ) {
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        "data",
+                        courseService.getStudentsByCourseId(courseId, search)
+                )
+        );
     }
 }
