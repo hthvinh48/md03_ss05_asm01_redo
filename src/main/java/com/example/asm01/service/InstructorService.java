@@ -3,6 +3,7 @@ package com.example.asm01.service;
 import com.example.asm01.dto.request.InstructorCreateRequest;
 import com.example.asm01.dto.InstructorDetail;
 import com.example.asm01.dto.request.InstructorUpdateRequest;
+import com.example.asm01.dto.response.CourseInstructorResponse;
 import com.example.asm01.dto.response.CourseResponse;
 import com.example.asm01.model.Course;
 import com.example.asm01.model.CourseStatus;
@@ -59,7 +60,11 @@ public class InstructorService {
                         course.getId(),
                         course.getTitle(),
                         course.getStatus(),
-                        course.getInstructor().getName())
+                        new CourseInstructorResponse(
+                                course.getInstructor().getId(),
+                                course.getInstructor().getName()
+                        )
+                )
         ).toList();
     }
 

@@ -2,6 +2,7 @@ package com.example.asm01.service;
 
 import com.example.asm01.dto.request.CourseCreateRequest;
 import com.example.asm01.dto.request.CourseUpdateRequest;
+import com.example.asm01.dto.response.CourseInstructorResponse;
 import com.example.asm01.model.Course;
 import com.example.asm01.model.Instructor;
 import com.example.asm01.repository.CourseRepository;
@@ -27,14 +28,15 @@ public class CourseService {
 
     public List<CourseResponse> findAllCourses() {
         return courseRepository.findAll().stream().map(
-                course -> {
-                    CourseResponse courseResponse = new CourseResponse();
-                    courseResponse.setId(course.getId());
-                    courseResponse.setTitle(course.getTitle());
-                    courseResponse.setInstructorName(course.getInstructor().getName());
-                    courseResponse.setStatus(course.getStatus());
-                    return courseResponse;
-                }
+                course -> new CourseResponse(
+                        course.getId(),
+                        course.getTitle(),
+                        course.getStatus(),
+                        new CourseInstructorResponse(
+                                course.getInstructor().getId(),
+                                course.getInstructor().getName()
+                        )
+                )
         ).toList();
     }
 
@@ -47,7 +49,10 @@ public class CourseService {
                 existing.getId(),
                 existing.getTitle(),
                 existing.getStatus(),
-                existing.getInstructor().getName()
+                new CourseInstructorResponse(
+                        existing.getInstructor().getId(),
+                        existing.getInstructor().getName()
+                )
         );
     }
 
