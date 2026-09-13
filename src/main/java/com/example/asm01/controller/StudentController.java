@@ -88,4 +88,26 @@ public class StudentController {
             );
         }
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteStudent(@PathVariable Long id) {
+        try {
+            studentService.deleteStudent(id);
+            return ResponseEntity.ok(
+                    new ApiResponse<>(
+                            true,
+                            "deleted student successfully",
+                            null
+                    )
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ApiResponse<>(
+                            false,
+                            e.getMessage(),
+                            null
+                    )
+            );
+        }
+    }
 }

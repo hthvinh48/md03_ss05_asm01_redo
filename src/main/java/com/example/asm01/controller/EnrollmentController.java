@@ -2,9 +2,9 @@ package com.example.asm01.controller;
 
 import com.example.asm01.dto.EnrollmentDetail;
 import com.example.asm01.dto.request.StudentEnrollmentRequest;
+import com.example.asm01.dto.response.StudentEnrollmentResponse;
 import com.example.asm01.model.StudentEnrollment;
 import com.example.asm01.dto.response.ApiResponse;
-import com.example.asm01.service.EnrollmentService;
 import com.example.asm01.service.StudentEnrollmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +15,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/enrollments")
 public class EnrollmentController {
-    private final EnrollmentService enrollmentService;
     private final StudentEnrollmentService studentEnrollmentService;
 
-    public EnrollmentController(EnrollmentService enrollmentService, StudentEnrollmentService studentEnrollmentService) {
-        this.enrollmentService = enrollmentService;
+    public EnrollmentController(StudentEnrollmentService studentEnrollmentService) {
         this.studentEnrollmentService = studentEnrollmentService;
     }
 
@@ -35,13 +33,13 @@ public class EnrollmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<StudentEnrollment>> findById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<StudentEnrollmentResponse>> findById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(
                     new ApiResponse<>(
                             true,
                             "fetched data successfully",
-                            enrollmentService.findEnrollmentById(id)
+                            studentEnrollmentService.findById(id)
                     )
             );
         } catch (RuntimeException e) {
@@ -81,7 +79,7 @@ public class EnrollmentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<StudentEnrollment>> delete(@PathVariable Long id) {
         try {
-            enrollmentService.deleteEnrollmentById(id);
+            studentEnrollmentService.deleteStudentEnrolment(id);
 
             return ResponseEntity.ok(
                     new ApiResponse<>(
