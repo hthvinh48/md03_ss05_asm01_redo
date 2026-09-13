@@ -54,7 +54,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Course>> insert(@RequestBody CourseCreateRequest course) {
+    public ResponseEntity<ApiResponse<Void>> insert(@RequestBody CourseCreateRequest course) {
         try {
             courseService.createCourse(course);
             return ResponseEntity.status(HttpStatus.CREATED).body(
@@ -76,7 +76,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Course>> update(@PathVariable Long id, @RequestBody CourseUpdateRequest course) {
+    public ResponseEntity<ApiResponse<Void>> update(@PathVariable Long id, @RequestBody CourseUpdateRequest course) {
         try {
             courseService.updateCourse(id, course);
             return ResponseEntity.ok(
@@ -98,7 +98,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Course>> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         try {
             courseService.deleteCourseById(id);
             return ResponseEntity.ok(

@@ -54,7 +54,7 @@ public class InstructorController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Instructor>> createInstructor(@RequestBody InstructorCreateRequest instructor) {
+    public ResponseEntity<ApiResponse<Void>> createInstructor(@RequestBody InstructorCreateRequest instructor) {
         instructorService.createInstructor(instructor);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
@@ -67,7 +67,7 @@ public class InstructorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Instructor>> updateInstructor(
+    public ResponseEntity<ApiResponse<Void>> updateInstructor(
             @PathVariable Long id,
             @RequestBody InstructorUpdateRequest req
     ) {
@@ -93,7 +93,7 @@ public class InstructorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Instructor>> deleteInstructor(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteInstructor(@PathVariable Long id) {
         try {
             instructorService.deleteInstructorById(id);
 

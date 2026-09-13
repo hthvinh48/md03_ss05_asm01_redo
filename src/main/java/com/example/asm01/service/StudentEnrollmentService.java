@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class StudentEnrollmentService {
@@ -43,19 +44,44 @@ public class StudentEnrollmentService {
         return enrollmentDetails;
     }
 
-    public String enrollStudent(Long enrollmentId, Long studentId) {
+    public void createStudentEnrolment(Long courseId, Long studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(
                 () -> new RuntimeException("Student with id: " + studentId + " not found")
         );
 
-        Course course = courseRepository.findById(enrollmentId).orElseThrow(
-                () -> new RuntimeException("Course with id: " + enrollmentId + " not found")
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new RuntimeException("Course with id: " + courseId + " not found")
         );
 
         StudentEnrollment studentEnrollment = new StudentEnrollment();
         studentEnrollment.setStudent(student);
         studentEnrollment.setCourse(course);
         studentEnrollmentRepository.save(studentEnrollment);
-        return "Enrolled course successfully";
+    }
+
+    public void updateStudentEnrolment(Long studentId, Long courseId, Long enrollmentId) {
+        StudentEnrollment studentEnrollment = studentEnrollmentRepository.findById(enrollmentId).orElseThrow(
+                () -> new RuntimeException("Student with id: " + studentId + " not found")
+        );
+
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new RuntimeException("Course with id: " + courseId + " not found")
+        );
+
+        Student student = studentRepository.findById(studentId).orElseThrow(
+                () -> new RuntimeException("Student with id: " + studentId + " not found")
+        );
+
+        studentEnrollment.setStudent(student);
+        studentEnrollment.setCourse(course);
+        studentEnrollmentRepository.save(studentEnrollment);
+    }
+
+    public void deleteStudentEnrolment(Long enrollmentId) {
+        StudentEnrollment studentEnrollment = studentEnrollmentRepository.findById(enrollmentId).orElseThrow(
+                () -> new RuntimeException("Student with id: " + enrollmentId + " not found")
+        );
+
+        studentEnrollmentRepository.delete(studentEnrollment);
     }
 }

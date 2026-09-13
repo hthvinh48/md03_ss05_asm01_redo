@@ -1,6 +1,7 @@
 package com.example.asm01.controller;
 
 import com.example.asm01.dto.EnrollmentDetail;
+import com.example.asm01.dto.request.StudentEnrollmentRequest;
 import com.example.asm01.model.StudentEnrollment;
 import com.example.asm01.dto.response.ApiResponse;
 import com.example.asm01.service.EnrollmentService;
@@ -56,16 +57,17 @@ public class EnrollmentController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createStudentEnrollment(
-            @RequestBody StudentEnrollment studentEnrollment
+            @RequestBody StudentEnrollmentRequest req
     ) {
         try {
+            studentEnrollmentService.createStudentEnrolment(
+                    req.getCourseId(),
+                    req.getStudentId()
+            );
             return ResponseEntity.ok(
                     new ApiResponse<>(
                             true,
-                            studentEnrollmentService.enrollStudent(
-                                studentEnrollment.getStudent().getId(),
-                                studentEnrollment.getCourse().getId()
-                            ),
+                            "created data successfully",
                             null
                     )
             );
@@ -76,39 +78,16 @@ public class EnrollmentController {
         }
     }
 
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<StudentEnrollment>> update(
-            @PathVariable Long id,
-            @RequestBody StudentEnrollment studentEnrollment
-    ) {
-        try {
-            return ResponseEntity.ok(
-                    new ApiResponse<>(
-                            true,
-                            "update enrollment successfully",
-                            enrollmentService.updateEnrollment(id, studentEnrollment)
-                    )
-            );
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ApiResponse<>(
-                            false,
-                            e.getMessage(),
-                            null
-                    )
-            );
-        }
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<StudentEnrollment>> delete(@PathVariable Long id) {
         try {
+            enrollmentService.deleteEnrollmentById(id);
+
             return ResponseEntity.ok(
                     new ApiResponse<>(
                             true,
                             "delete enrollment successfully",
-                            enrollmentService.deleteEnrollmentById(id)
+                            null
                     )
             );
         } catch (RuntimeException e) {
@@ -122,16 +101,18 @@ public class EnrollmentController {
         }
     }
 
-    @PostMapping("/enroll-course")
-    public ResponseEntity<ApiResponse<EnrollmentDetail>> enrollCourse
-            (@RequestBody StudentEnrollment studentEnrollment)
-    {
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> updateStudentEnrollment(
+            @PathVariable Long id,
+            @RequestBody StudentEnrollmentRequest request
+    ) {
         try {
+            studentEnrollmentService.updateStudentEnrolment(request.getStudentId(), request.getCourseId(), id);
             return ResponseEntity.ok(
                     new ApiResponse<>(
                             true,
-                            "Enrollment successfully",
-                            enrollmentService.enrollCourse(studentEnrollment)
+                            "updated enrollment successfully",
+                            null
                     )
             );
         } catch (RuntimeException e) {
