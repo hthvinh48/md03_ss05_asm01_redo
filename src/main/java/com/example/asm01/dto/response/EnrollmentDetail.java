@@ -1,4 +1,4 @@
-package com.example.asm01.dto;
+package com.example.asm01.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.example.asm01.service;
 
-import com.example.asm01.dto.EnrollmentDetail;
+import com.example.asm01.dto.response.EnrollmentDetail;
 import com.example.asm01.dto.response.CourseEnrollmentResponse;
 import com.example.asm01.dto.response.StudentEnrollmentResponse;
 import com.example.asm01.model.Course;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class StudentEnrollmentService {

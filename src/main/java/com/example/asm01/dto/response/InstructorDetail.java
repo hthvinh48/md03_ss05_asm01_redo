@@ -1,6 +1,5 @@
-package com.example.asm01.dto;
+package com.example.asm01.dto.response;
 
-import com.example.asm01.dto.response.CourseResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

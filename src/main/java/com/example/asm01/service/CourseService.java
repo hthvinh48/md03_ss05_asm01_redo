@@ -4,13 +4,10 @@ import com.example.asm01.dto.request.CourseCreateRequest;
 import com.example.asm01.dto.request.CourseDropoutRequest;
 import com.example.asm01.dto.request.CourseEnrollmentRequest;
 import com.example.asm01.dto.request.CourseUpdateRequest;
-import com.example.asm01.dto.response.CourseEnrollmentResponse;
-import com.example.asm01.dto.response.CourseInstructorResponse;
-import com.example.asm01.dto.response.StudentResponse;
+import com.example.asm01.dto.response.*;
 import com.example.asm01.model.*;
 import com.example.asm01.repository.CourseRepository;
 import com.example.asm01.repository.InstructorRepository;
-import com.example.asm01.dto.response.CourseResponse;
 import com.example.asm01.repository.StudentEnrollmentRepository;
 import com.example.asm01.repository.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -58,14 +55,25 @@ public class CourseService {
         );
     }
 
-    public Page<CourseResponse> getPagedCourses(int page, int size, String sortBy, Sort.Direction direction) {
+    public PageResponse<CourseResponse> getPagedCourses(
+            int page, int size, String sortBy, Sort.Direction direction
+    ) {
         if (page < 0) page = 0;
         if (size <= 0) size = 10;
         if (sortBy == null || sortBy.isBlank()) sortBy = "id";
         if (direction == null) direction = Sort.Direction.DESC;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        return courseRepository.findAll(pageable).map(this::toCourseResponse);
+        Page<CourseResponse> coursePage= courseRepository.findAll(pageable).map(this::toCourseResponse);
+
+        return new PageResponse<>(
+                coursePage.getContent(),
+                coursePage.getNumber(),
+                coursePage.getSize(),
+                (int) coursePage.getTotalElements(),
+                coursePage.getTotalPages(),
+                coursePage.isLast()
+        );
     }
 
     public CourseResponse findCourseById(Long id) {

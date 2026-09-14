@@ -1,9 +1,8 @@
 package com.example.asm01.controller;
 
 import com.example.asm01.dto.request.InstructorCreateRequest;
-import com.example.asm01.dto.InstructorDetail;
+import com.example.asm01.dto.response.InstructorDetail;
 import com.example.asm01.dto.request.InstructorUpdateRequest;
-import com.example.asm01.model.Instructor;
 import com.example.asm01.dto.response.ApiResponse;
 import com.example.asm01.service.InstructorService;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.example.asm01.controller;
 
-import com.example.asm01.dto.EnrollmentDetail;
+import com.example.asm01.dto.response.EnrollmentDetail;
 import com.example.asm01.dto.request.StudentEnrollmentRequest;
 import com.example.asm01.dto.response.StudentEnrollmentResponse;
 import com.example.asm01.model.StudentEnrollment;
