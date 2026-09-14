@@ -14,6 +14,10 @@ import com.example.asm01.dto.response.CourseResponse;
 import com.example.asm01.repository.StudentEnrollmentRepository;
 import com.example.asm01.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,8 +35,10 @@ public class CourseService {
     public CourseService(
             CourseRepository courseRepository,
             InstructorRepository instructorRepository,
-            StudentEnrollmentRepository studentEnrollmentRepository, StudentEnrollmentService studentEnrollmentService,
-            StudentRepository studentRepository) {
+            StudentEnrollmentRepository studentEnrollmentRepository,
+            StudentEnrollmentService studentEnrollmentService,
+            StudentRepository studentRepository
+    ) {
         this.courseRepository = courseRepository;
         this.instructorRepository = instructorRepository;
         this.studentEnrollmentRepository = studentEnrollmentRepository;
@@ -40,18 +46,26 @@ public class CourseService {
         this.studentRepository = studentRepository;
     }
 
-    public List<CourseResponse> findAllCourses() {
-        return courseRepository.findAll().stream().map(
-                course -> new CourseResponse(
-                        course.getId(),
-                        course.getTitle(),
-                        course.getStatus(),
-                        new CourseInstructorResponse(
-                                course.getInstructor().getId(),
-                                course.getInstructor().getName()
-                        )
+    private CourseResponse toCourseResponse(Course course) {
+        return new CourseResponse(
+                course.getId(),
+                course.getTitle(),
+                course.getStatus(),
+                new CourseInstructorResponse(
+                        course.getInstructor().getId(),
+                        course.getInstructor().getName()
                 )
-        ).toList();
+        );
+    }
+
+    public Page<CourseResponse> getPagedCourses(int page, int size, String sortBy, Sort.Direction direction) {
+        if (page < 0) page = 0;
+        if (size <= 0) size = 10;
+        if (sortBy == null || sortBy.isBlank()) sortBy = "id";
+        if (direction == null) direction = Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        return courseRepository.findAll(pageable).map(this::toCourseResponse);
     }
 
     public CourseResponse findCourseById(Long id) {
@@ -59,15 +73,7 @@ public class CourseService {
                 new RuntimeException("Course with id " + id + " not found!")
         );
 
-        return new CourseResponse(
-                existing.getId(),
-                existing.getTitle(),
-                existing.getStatus(),
-                new CourseInstructorResponse(
-                        existing.getInstructor().getId(),
-                        existing.getInstructor().getName()
-                )
-        );
+        return toCourseResponse(existing);
     }
 
     public void createCourse(CourseCreateRequest req) {
