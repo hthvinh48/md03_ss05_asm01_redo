@@ -55,8 +55,12 @@ public class CourseService {
         );
     }
 
-    public PageResponse<CourseResponse> getPagedCourses(
-            int page, int size, String sortBy, Sort.Direction direction
+    public PageResponse<CourseResponse> getPagedCoursesByStatus(
+            int page,
+            int size,
+            String sortBy,
+            Sort.Direction direction,
+            CourseStatus status
     ) {
         if (page < 0) page = 0;
         if (size <= 0) size = 10;
@@ -64,15 +68,16 @@ public class CourseService {
         if (direction == null) direction = Sort.Direction.DESC;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<CourseResponse> coursePage= courseRepository.findAll(pageable).map(this::toCourseResponse);
+        Page<Course> coursePage = courseRepository.findAllByStatus(status, pageable);
+        Page<CourseResponse> pageResponse = coursePage.map(this::toCourseResponse);
 
         return new PageResponse<>(
-                coursePage.getContent(),
-                coursePage.getNumber(),
-                coursePage.getSize(),
-                (int) coursePage.getTotalElements(),
-                coursePage.getTotalPages(),
-                coursePage.isLast()
+                pageResponse.getContent(),
+                pageResponse.getNumber(),
+                pageResponse.getSize(),
+                (int) pageResponse.getTotalElements(),
+                pageResponse.getTotalPages(),
+                pageResponse.isLast()
         );
     }
 

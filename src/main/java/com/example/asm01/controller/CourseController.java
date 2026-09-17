@@ -5,6 +5,7 @@ import com.example.asm01.dto.request.CourseDropoutRequest;
 import com.example.asm01.dto.request.CourseEnrollmentRequest;
 import com.example.asm01.dto.request.CourseUpdateRequest;
 import com.example.asm01.dto.response.*;
+import com.example.asm01.model.CourseStatus;
 import com.example.asm01.service.CourseService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -24,16 +25,17 @@ public class CourseController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<CourseResponse>>> findAll(
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) Sort.Direction direction
+            @RequestParam(required = false) Sort.Direction direction,
+            @RequestParam(defaultValue = "ACTIVE") CourseStatus status
     ) {
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         true,
                         "fetched course data successfully",
-                        courseService.getPagedCourses(page, size, sortBy, direction)
+                        courseService.getPagedCoursesByStatus(page, size, sortBy, direction, status)
                 )
         );
     }
