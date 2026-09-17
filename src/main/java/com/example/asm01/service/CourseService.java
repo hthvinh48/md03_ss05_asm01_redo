@@ -143,7 +143,7 @@ public class CourseService {
     public void deleteStudentEnrollment(Long courseId, CourseDropoutRequest request) {
         boolean isExistActiveCourse = courseRepository.existsByIdAndStatus(courseId, CourseStatus.ACTIVE);
 
-        Student student = studentRepository.findById(request.getStudentId()).orElseThrow(
+        studentRepository.findById(request.getStudentId()).orElseThrow(
                 () -> new RuntimeException("Student with id " + request.getStudentId() + " not found!")
         );
 
@@ -163,9 +163,7 @@ public class CourseService {
 
         List<Long> studentIds = new ArrayList<>();
 
-        studentEnrollments.forEach(enrollment -> {
-            studentIds.add(enrollment.getStudent().getId());
-        });
+        studentEnrollments.forEach(enrollment -> studentIds.add(enrollment.getStudent().getId()));
 
         List<Student> students = studentRepository.findByNameContains(search);
 
