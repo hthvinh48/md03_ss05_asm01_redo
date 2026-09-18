@@ -24,7 +24,7 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<CourseResponse>>> findAll(
+    public ResponseEntity<ApiResponse<PageResponse<CourseResponseV2>>> findAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortBy,

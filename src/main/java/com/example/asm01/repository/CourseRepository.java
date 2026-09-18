@@ -1,5 +1,6 @@
 package com.example.asm01.repository;
 
+import com.example.asm01.dto.response.CourseResponseV2;
 import com.example.asm01.model.Course;
 import com.example.asm01.model.CourseStatus;
 import org.springframework.data.domain.Page;
@@ -13,4 +14,11 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("select c from Course c where c.status = :status")
     Page<Course> findAllByStatus(@Param("status") CourseStatus status, Pageable pageable);
+
+    @Query("""
+        select new com.example.asm01.dto.response.CourseResponseV2(c.id, c.title, c.status)
+        from Course c
+        where c.status = :status
+        """)
+    Page<CourseResponseV2> findAllByStatusV2(@Param("status") CourseStatus status, Pageable pageable);
 }
