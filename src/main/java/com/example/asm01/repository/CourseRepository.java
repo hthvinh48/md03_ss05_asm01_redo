@@ -18,7 +18,13 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("""
         select new com.example.asm01.dto.response.CourseResponseV2(c.id, c.title, c.status)
         from Course c
-        where c.status = :status
+        where
+            (:status is null or c.status = :status) and
+            (lower(c.title) like lower(concat('%', :keyword, '%')))
         """)
-    Page<CourseResponseV2> findAllByStatusV2(@Param("status") CourseStatus status, Pageable pageable);
+    Page<CourseResponseV2> findAllByStatusV2(
+            @Param("status") CourseStatus status,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
 }

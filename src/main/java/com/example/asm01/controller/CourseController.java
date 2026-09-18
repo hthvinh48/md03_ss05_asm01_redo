@@ -27,15 +27,16 @@ public class CourseController {
     public ResponseEntity<ApiResponse<PageResponse<CourseResponseV2>>> findAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) Sort.Direction direction,
-            @RequestParam(defaultValue = "ACTIVE") CourseStatus status
+            @RequestParam(required = false) CourseStatus status
     ) {
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         true,
                         "fetched course data successfully",
-                        courseService.getPagedCoursesByStatus(page, size, sortBy, direction, status)
+                        courseService.getPagedCoursesByStatus(page, size, keyword, sortBy, direction, status)
                 )
         );
     }

@@ -58,17 +58,23 @@ public class CourseService {
     public PageResponse<CourseResponseV2> getPagedCoursesByStatus(
             int page,
             int size,
+            String keyword,
             String sortBy,
             Sort.Direction direction,
             CourseStatus status
     ) {
+        Pageable pageable;
+
         if (page < 0) page = 0;
         if (size <= 0) size = 10;
-        if (sortBy == null || sortBy.isBlank()) sortBy = "id";
-        if (direction == null) direction = Sort.Direction.DESC;
+        if (keyword == null) keyword = "";
+        if (sortBy == null || direction == null) {
+            pageable = PageRequest.of(page, size);
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<CourseResponseV2> pageResponse = courseRepository.findAllByStatusV2(status, pageable);
+        Page<CourseResponseV2> pageResponse = courseRepository.findAllByStatusV2(status, keyword, pageable);
 
         return new PageResponse<>(
                 pageResponse.getContent(),
