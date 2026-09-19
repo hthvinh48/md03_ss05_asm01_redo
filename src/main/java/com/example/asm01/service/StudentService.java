@@ -1,10 +1,15 @@
 package com.example.asm01.service;
 
 import com.example.asm01.dto.request.StudentCreateRequest;
+import com.example.asm01.dto.response.PageResponse;
 import com.example.asm01.dto.response.StudentResponse;
 import com.example.asm01.model.Student;
 import com.example.asm01.repository.StudentEnrollmentRepository;
 import com.example.asm01.repository.StudentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +33,38 @@ public class StudentService {
             studentResponse.setEmail(student.getEmail());
             return studentResponse;
         }).toList();
+    }
+
+    public PageResponse<StudentResponse> getAllStudentsPage(
+            int page,
+            int size,
+            String name,
+            String email,
+            String sortBy,
+            Sort.Direction direction
+    ) {
+        Pageable pageable;
+
+        if (page < 0) page = 0;
+        if (size <= 0) size = 10;
+        if (name == null) name = "";
+        if (email == null) email = "";
+        if (sortBy == null || direction == null) {
+            pageable = PageRequest.of(page, size);
+        } else {
+            pageable = PageRequest.of(page, size, direction, sortBy);
+        }
+
+        Page<StudentResponse> responsePage = studentRepository.findAllByNameOrEmail(name, email, pageable);
+
+        return new PageResponse<>(
+                responsePage.getContent(),
+                responsePage.getNumber(),
+                responsePage.getSize(),
+                (int) responsePage.getTotalElements(),
+                responsePage.getTotalPages(),
+                responsePage.isLast()
+        );
     }
 
     public StudentResponse getStudentById(Long id) {

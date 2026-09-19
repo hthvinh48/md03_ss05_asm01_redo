@@ -2,14 +2,13 @@ package com.example.asm01.controller;
 
 import com.example.asm01.dto.request.StudentCreateRequest;
 import com.example.asm01.dto.response.ApiResponse;
+import com.example.asm01.dto.response.PageResponse;
 import com.example.asm01.dto.response.StudentResponse;
-import com.example.asm01.model.Student;
 import com.example.asm01.service.StudentService;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/students")
@@ -21,12 +20,19 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<StudentResponse>>> getAllStudents() {
+    public ResponseEntity<ApiResponse<PageResponse<StudentResponse>>> getAllStudents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) Sort.Direction direction
+    ) {
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         true,
                         "Successfully retrieved all students",
-                        studentService.getAllStudents()
+                        studentService.getAllStudentsPage(page, size, name, email, sortBy, direction)
                 )
         );
     }
